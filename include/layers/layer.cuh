@@ -26,13 +26,16 @@ namespace tl {
 	// Destructor uses streams to deallocate memory asynchronously and destorys the stream handle
 	~Layer();
 
+	// Sets the d_inputs pointer to the input pointer. If the input pointer is not a device pointer, an error is thrown. If the assertion passes, the current d_inputs pointer is freed asynchronously
+	void set_input_ptr(float* ptr);
+
 	Layer(const Layer& l) = delete;
 	void operator=(const Layer& l) = delete;
 	Layer(Layer&& l) = delete;
 	void operator=(Layer&& l) = delete;
 
     private:
-	// Stream allows concurrent construction/destruction of all layers in a network
+	// Stream allows concurrent allocation/deallocation of device buffers
 	cudaStream_t _stream;
     };
 }
