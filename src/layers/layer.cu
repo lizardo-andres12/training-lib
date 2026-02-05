@@ -1,5 +1,3 @@
-#include <stdexcept>
-
 #include "layers/layer.cuh"
 #include "util.cuh"
 
@@ -24,11 +22,7 @@ Layer::Layer(size_t in_features, size_t out_features, float* d_inputs)
     , out_features(out_features)
     , d_inputs(d_inputs)
 {
-    cudaPointerAttributes attr;
-    CUDA_CHECK(cudaPointerGetAttributes(&attr, d_inputs));
-    if (attr.type != cudaMemoryTypeDevice) {
-	throw std::logic_error("Non-device pointer passed as d_inputs to Layer constructor");
-    }
+    assert_device_pointer(d_inputs);
 
     CUDA_CHECK(cudaStreamCreate(&_stream));
 
@@ -51,5 +45,12 @@ Layer::~Layer() {
 
     cudaStreamSynchronize(_stream);
     cudaStreamDestroy(_stream);
+}
+
+void Layer::set_input_ptr(float* ptr) {
+    assert_device_pointer(ptr);
+
+    cudaFreeAsync(d_inputs, _stream);
+    d_inputs = ptr;
 }
 
