@@ -2,7 +2,6 @@
 
 #include <cuda_runtime.h>
 #include <cuda/cmath>
-#include <numeric>
 
 namespace tl::kernels {
 
