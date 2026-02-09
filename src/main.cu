@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "include/kernels/curandom.cuh"
+#include "include/kernels/relu_matmul.cuh"
 
 template <uint32_t N, uint32_t TILE_WIDTH, uint32_t COARSEN_FACTOR>
 __global__ void matmulsq_tiled_coarsened(const float* mat_a, const float* mat_b, float* out) {
@@ -105,7 +106,7 @@ int main() {
 
     dim3 block_dim(TILE_WIDTH, REDUCED_HEIGHT);
     dim3 grid_dim(cuda::ceil_div(N, TILE_WIDTH), cuda::ceil_div(N, REDUCED_HEIGHT));
-    matmulsq_tiled_coarsened<N, TILE_WIDTH, COARSEN_FACTOR><<<grid_dim, block_dim>>>(dev_a, dev_b, dev_out);
+    tl::kernels::relu::matmulsq_tiled_coarsened<N, TILE_WIDTH, COARSEN_FACTOR><<<grid_dim, block_dim>>>(dev_a, dev_b, dev_out);
 
     cudaMemcpy(host_out, dev_out, sizeof(float) * AREA, cudaMemcpyDeviceToHost);
 
