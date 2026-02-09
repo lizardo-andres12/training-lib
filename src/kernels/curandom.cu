@@ -11,6 +11,6 @@ __global__ void tl::kernels::init_random_weights(curandState* state, float* buf,
 	return;
     }
 
-    buf[idx] = curand_uniform(&state[idx]);
+    buf[idx] = curand_uniform(&state[idx]) - 0.5;
 }
 
